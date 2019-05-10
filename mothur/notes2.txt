@@ -1,0 +1,176 @@
+mothur.1556468436.logfile
+tadpole.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.pick.count_table
+
+parallel technology building
+--assembling and testing gas and liquid control
+--introducing glass beads and taking test mixtures
+
+metabolomics - goes to PNNL
+
+parallel samples to be sent to PNNL
+
+metabolite profiles for liquid (ex situ)
+
+24-48 samples metabolomics (no cost - samples to be sent to PNNL - 
+
+***incorporate benchtop measurements *** in the lab to align with PNNL part
+
+
+We suggest that careful distinction
+between the mode of action (transport vs. process)
+and the timescale of activity (ephemeral to permanent)
+results in at least four very different
+mechanisms by which a landscape patch might
+have a disproportionate effect on landscape or
+ecosystem scale budgets.
+
+1. PERMANENT CONTROL POINTS are landscape
+patches where continuous delivery of reactants
+and nearly constant appropriate environmental
+conditions allow for sustained high rates of
+biogeochemical activity relative to the surrounding
+landscape. The hydrologically connected
+flowpaths running through riparian
+zones and hyporheic zones are well-established
+examples of permanent control points within
+landscapes (Peterjohn and Correll 1984; Hedin
+and others 1998; Triska and others 1993).
+
+2. ACTIVATED CONTROL POINTS are landscape
+patches that support high transformation rates
+only when the delivery rate of one or more
+limiting reactants increases and when abiotic
+conditions required for a particular biogeochemical
+process are optimized. For example,
+organic matter oxidation is constrained in many
+areas of the landscape (for example, low-lying
+topographic positions) by oxygen supply; denitrification
+in these same areas may be constrained
+by low delivery of nitrate. Events that
+provide one or more limiting resources or conditions
+can initiate high activity rates in these
+locations (Jenerette and others 2008; Harms and
+Grimm 2012).
+
+3. EXPORT CONTROL POINTS are landscape patches
+in which reactants accumulate until a hydraulic
+gradient or diffusion threshold is
+overcome, allowing for export. It is important to
+note that these areas could have very low in situ
+rates of transformation accompanied by efficient
+retention, or they may be permanent or activated
+control points in which the products of high biogeochemical
+reaction rates accumulate over
+time until conditions allow for their export. For
+example, the consequences of an export control
+point were infamously observed at Lake Nyos
+when accumulating deep water CO2 reached
+sufficiently high concentrations to explosively
+degas, leading to mass suffocation (Kling and
+others 1987). Less dramatic but far more commonly
+encountered examples are the high rates
+of DOC export during storms as DOC that has
+accumulated in upslope portions of the landscape
+is transported to receiving streams (for
+example, Boyer and others 1997, 2000).
+
+4. TRANSPORT CONTROL POINTS are landscape
+patches that have exceptionally high transport
+capacity for water and gases and thereby contribute
+disproportionately to the movement and
+losses of biogeochemically important elements
+without themselves possessing high activity
+rates. Transport control points can also potentially
+mask nearby permanent control points by quickly
+and efficiently removing product from the site of
+processing, leading to low concentrations or
+pools of the product in situ. Macropore flow
+paths are a classic example of a transport control
+point within many soils (Bundt and others
+2001). In the Anthropocene, stormwater pipes
+and tile drains are designed examples of transport
+control points found throughout urban and agricultural
+landscapes.
+
+
+
+Because of fleeting environmental changes
+within hyporheic zones, we hypothesize that hyporheic zone
+microbiomes may exhibit more phenotypic plasticity than more stable
+ecosystems, meriting further investigation as we explore spatiotemporal
+dynamics across multiple systems (Fodelianakis et al., 2017).
+
+Forexample,stochastic
+assemblyprocesses(Hubbell,2001; Rosindell etal.,2011; Stegen
+et al.,2012; Nemergutetal.,2013), phenotypicplasticity
+(DeWittetal., 1998), andpriorityeffects(Fukami, 2004; Fukami
+et al., 2010) candecouplemicrobialcommunitystructurefrom
+environmentalconditions,andundersuchconditions,microbial
+community structureshouldbecentraltoexplainingecosystem
+processrates.Aunifyingperspectivethataccountsforthe
+dynamic relationshipsbetweenmicrobialcommunitystructure
+and ecosystemfunctionisvitalforimprovingpredictionsof
+ecosystemprocessrates,yetrecentworkhasbeenlargelyunable
+to deciphercoherenttrendsinsuchrelationshipsacrossstudies
+(Roccaetal., 2014; Bier etal., 2015).
+
+
+Thesefactors
+also inducespatiallyandtemporallyvariablerelationships
+between microbialcommunitiesandecosystemprocesses,
+and thesamemicrobialcommunitymaydisplaydifferent
+relationshipstoecosystemfunctionwhensampledthrough
+time. Moreover,theextenttowhichfunctionaltraitsare
+phylogeneticallyconservedvarieswiththetraitofinterest
+(Martinyetal., 2013), andthus,someprocessesmayexhibit
+inherently strongercorrelationswithtaxonomicmetrics
+thanothers.Although,rapidlyimprovingtranscriptomicand
+proteomic sequencingtechnologymayenhancepredictions
+of ecosystemprocessesbyidentifyingactivesegmentsof
+microbial communities(Abram, 2015), toofewdatasets
+presentlyexisttoconductarobustanalysiswiththesedata.
+Studiesinvestigatingtheextenttowhichthesedynamicsare
+maskedwithinobservationsofmicrobialcommunitystructure
+and functionareimperativetodecipheringandimprovingthe
+current abilityofmicrobialdatatopredictecosystemprocess
+rates.
+
+Aswell,discrepanciesinmethodologymayalsoconfoundthe
+relationshipweobservedinthefulldatasetbetweenmicrobial
+communitiesandbiogeochemicalprocesses(Sinsabaughetal.,
+2015).
+
+Despiteinherentlimitationsinmicrobialdata,ourdata
+analysis suggeststhatmicrobialdatatypesdifferintheir
+abilitytoexplainprocessesthatarephylogeneticallybroad
+vs.narrowandthatareproductsoffacultativevs.obligate
+metabolisms(Figure2).
+
+Takentogether,theseresultssuggestthatdespitea
+relatively tightconnectionbetweentheenvironment,microbial
+community structure,andprocessdata,themicrobialguilds
+driving nitrificationratesarepartiallydecoupledatafunctional
+levelfromenvironmentaldriversofnitrification.Importantly,
+althoughnitrificationwastheonlynarrowprocessinour
+datasetwithsufficientreplicationtoexamineindependently,the
+highexplanatorypoweroffunctionalgenes,bothaloneand
+in combinationwithenvironmentalvariables,fordescribing
+nitrificationratesrelativetootherprocessesalsoconveysthe
+potential fortheinclusionoffunctionalmetricsinimproving
+predictions ofecosystemprocessesthataremediatedby
+phylogeneticallynarrowfunctionalguilds.
+
+
+
+Sedimentsystemshadweaker
+explanatorypowerofprocessratesbybothenvironmental
+variablesandmicrobialcommunitystructurethannaturalor
+agriculturalsoils.Sedimentprocessesareinfluencedbyboth
+sediment andporewaterchemistry(MiddelburgandLevin,
+2009), andthesedatasetsmaybemorelikelytohaveunmeasured
+variablesorerrorsduetospatialdiscrepanciesthanother
+systems. Inparticular,dissolvedoxygenconcentrationisastrong
+determinant ofredoxpotentialandecosystemprocessesin
+sediments (Abelletal., 2011) butwasonlymeasuredinthree
+of 12datasets.
+
