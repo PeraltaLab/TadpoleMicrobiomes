@@ -1,25 +1,25 @@
-﻿SampleID,Project,Species,Diet
-RvSAJ030,FrogMicro,variabilis,egg fed
-RiBOC015,FrogMicro,imitator,egg fed
-RiNEW021,FrogMicro,imitator,detritus
-RvSAJ025,FrogMicro,variabilis,detritus
-RvSAJ026,FrogMicro,variabilis,detritus
-RvSAJ018,FrogMicro,variabilis,detritus
-RiNEW012,FrogMicro,imitator,egg fed
-RiNEW018,FrogMicro,imitator,egg fed
-RvSAJ016,FrogMicro,variabilis,detritus
-RvSAJ015,FrogMicro,variabilis,egg fed
-RiNEW024,FrogMicro,imitator,detritus
-RvSAJ021,FrogMicro,variabilis,egg fed
-RiWAS001,FrogMicro,imitator,egg fed
-RvSAJ020,FrogMicro,variabilis,detritus
-RiNEW022,FrogMicro,imitator,detritus
-RvSAJ032,FrogMicro,variabilis,egg fed
-RvSAJ014,FrogMicro,variabilis,egg fed
-RiNEW008,FrogMicro,imitator,egg fed
-RiNEW006,FrogMicro,imitator,egg fed
-RiNEW025,FrogMicro,imitator,detritus
-RiNEW023,FrogMicro,imitator,detritus
-RiNEW002,FrogMicro,imitator,egg fed
-RvSAJ024,FrogMicro,variabilis,detritus
-RiNEW003,FrogMicro,imitator,egg fed
+﻿SampleID,Project,Species,Diet,Location
+RvSAJ030,FrogMicro,variabilis,egg fed,lab
+RiBOC015,FrogMicro,imitator,egg fed,NA
+RiNEW021,FrogMicro,imitator,detritus,field
+RvSAJ025,FrogMicro,variabilis,detritus,field
+RvSAJ026,FrogMicro,variabilis,detritus,field
+RvSAJ018,FrogMicro,variabilis,detritus,field
+RiNEW012,FrogMicro,imitator,egg fed,NA
+RiNEW018,FrogMicro,imitator,egg fed,NA
+RvSAJ016,FrogMicro,variabilis,detritus,field
+RvSAJ015,FrogMicro,variabilis,egg fed,lab
+RiNEW024,FrogMicro,imitator,detritus,field
+RvSAJ021,FrogMicro,variabilis,egg fed,lab
+RiWAS001,FrogMicro,imitator,egg fed,field
+RvSAJ020,FrogMicro,variabilis,detritus,field
+RiNEW022,FrogMicro,imitator,detritus,field
+RvSAJ032,FrogMicro,variabilis,egg fed,lab
+RvSAJ014,FrogMicro,variabilis,egg fed,lab
+RiNEW008,FrogMicro,imitator,egg fed,field
+RiNEW006,FrogMicro,imitator,egg fed,field
+RiNEW025,FrogMicro,imitator,detritus,field
+RiNEW023,FrogMicro,imitator,detritus,field
+RiNEW002,FrogMicro,imitator,egg fed,NA
+RvSAJ024,FrogMicro,variabilis,detritus,field
+RiNEW003,FrogMicro,imitator,egg fed,field
