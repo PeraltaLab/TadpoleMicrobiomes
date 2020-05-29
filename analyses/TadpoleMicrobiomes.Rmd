@@ -385,7 +385,7 @@ p <- ggplot(diversity, aes(x=Diet, y=shannon, color=as.factor(Diet)))+ geom_boxp
   geom_point(aes(color=factor(Diet)), size=2, position = position_jitterdodge()) +       
   scale_color_manual(name="Diet", values=c("darkgreen", "darkorange"), labels = c("detritus fed", "egg fed")) +
   stat_summary(fun.data=mean_cl_boot,size=0.75) 
-p1=p+facet_wrap(~Species)+facet_grid(. ~ Species,labeller = labeller(Species=spp.labs)) + theme(strip.text = element_text(face = "italic"))
+p1<-p+facet_wrap(~Species)+facet_grid(. ~ Species,labeller = labeller(Species=spp.labs)) + theme(strip.text = element_text(face = "italic"))
 p1 + theme_bw() + 
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line 
           =element_line(colour = "black")) + 
@@ -407,7 +407,8 @@ p <- ggplot(diversity, aes(x=Diet, y=simp.even, color=as.factor(Diet)))+ geom_bo
   geom_point(aes(color=factor(Diet)), size=2, position = position_jitterdodge()) +       
   scale_color_manual(name="Diet", values=c("darkgreen", "darkorange"), labels = c("detritus fed", "egg fed")) +
   stat_summary(fun.data=mean_cl_boot,size=0.75) 
-p1 <- p  + facet_wrap(~Species)+facet_grid(. ~ Species,labeller = labeller(Species=spp.labs))+ theme(strip.text = element_text(face = "italic")) +
+p1<-p+facet_wrap(~Species)+facet_grid(. ~ Species,labeller = labeller(Species=spp.labs)) + theme(strip.text = element_text(face = "italic"))
+p1 + theme_bw() + 
     theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line 
           =element_line(colour = "black")) + 
     theme(axis.title=element_text(vjust=1,size=14,face="bold"),
@@ -418,7 +419,6 @@ p1 <- p  + facet_wrap(~Species)+facet_grid(. ~ Species,labeller = labeller(Speci
           element_text(size=14, face="bold"), strip.background = element_rect(colour="black",
           fill="white", size=1)) +
           scale_x_discrete(breaks=c("detritus", "egg fed"), labels=c("detritus fed", "egg fed"))
-  
 ggsave("../figures/simp.even.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 ```
 
