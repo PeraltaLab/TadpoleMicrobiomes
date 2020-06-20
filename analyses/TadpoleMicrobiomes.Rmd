@@ -161,7 +161,7 @@ plot1a +
 ggsave("../figures/Ordination_imitator_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=6, height=6, dpi=300, limitsize=TRUE)
 ```
 # Bacterial community indicator species analysis - R. imitator diet
-```{r Bacteria Indicator Species i, include=FALSE}
+```{r Bacteria Indicator Species i, echo=TRUE}
 library("labdsv")
 
 dataREL <- dataREL.i[, colSums(dataREL.i) > 0.05]
@@ -275,7 +275,7 @@ ggsave("../figures/Ordination_variabilis_diet.pdf", plot=last_plot(), device=NUL
 ```
 
 # Bacterial community indicator species analysis - R. variabilis diet
-```{r Bacteria Indicator Species v, include=FALSE}
+```{r Bacteria Indicator Species v, echo=TRUE}
 library("labdsv")
 
 dataREL <- dataREL.v[, colSums(dataREL.v) > 0.05]
@@ -336,7 +336,7 @@ diversity <- cbind(design.final,richness,shannon,simp.even,J)
 write.csv(diversity,"../data/diversity.bact.raw.csv")
 ```
 
-# Diversity Metrics - Hypothesis Testing ### NEED TO RERUN - by species
+# Diversity Metrics - Hypothesis Testing - by species
 ```{r Hypothesis Testing Bacteria both, echo=TRUE}
 #summary table for bacterial diversity
 summary <- diversity %>% group_by(Species, Diet) %>% summarise(mean.richness=mean(richness), se.richness=se(richness), mean.shannon=mean(shannon), se.shannon=se(shannon))
@@ -345,7 +345,7 @@ write.csv(summary,"../data/diversity.bact.summary.csv")
 
 #diversity <- read.csv("../data/diversity.bact.summary.csv", row.names=1)
 
-library(lmerTest) # need to redo by species separately
+library(lmerTest) 
 # R. imitator
 diversity.i <- subset(diversity, Species == "imitator")
 richness.lm.i <- lm(richness ~ Diet, data = diversity.i)
@@ -445,11 +445,10 @@ p1 + theme_bw() +
 ggsave("../figures/richness.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 ```
 
+```{r Ordination (PCoA) Bacteria all years, eval=FALSE, include=FALSE}
 # Bacterial Ordinations - full data set 
 
-## Principal Coordinates Ordination
-```{r Ordination (PCoA) Bacteria all years, eval=FALSE, include=FALSE}
-# Principal Coordinates Analysis
+## Principal Coordinates Ordination# Principal Coordinates Analysis
 dataREL.dist <- vegdist(dataREL, method="bray")
 
 pcoa <- cmdscale(dataREL.dist, k=3, eig=TRUE, add=FALSE)
