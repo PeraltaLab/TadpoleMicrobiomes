@@ -460,7 +460,8 @@ for(i in 1:dim(otu)[1]){
   dataREL[i,] <- otu[i,]/sum(otu[i,])
 }
 
-## Principal Coordinates Ordination# Principal Coordinates Analysis
+## Principal Coordinates Ordination
+# Principal Coordinates Analysis
 dataREL.dist <- vegdist(dataREL, method="bray")
 
 pcoa <- cmdscale(dataREL.dist, k=3, eig=TRUE, add=FALSE)
@@ -530,43 +531,6 @@ xlab("PCoA 1 (22.2%)") + ylab("PCoA 2 (10.1%)") +
   guides(colour = guide_legend(override.aes = list(pch=16, size = 4)),
          shape = guide_legend(override.aes = list(size = 4)))
 ggsave("../figures/ordination_allspp_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
-```
-
-*****
-# Combine
-pcoa.cent.dataframe <- cbind(t(pcoa.centroids), t(pcoa.centroids.se))
-colnames(pcoa.cent.dataframe) <- c("V1", "V2", "V1e", "V2e")
-pcoa.cent.treats <- rownames(pcoa.cent.dataframe)
-
-pcoa.shape <- as.factor(sapply(strsplit(pcoa.cent.treats, "_"), `[`, 2)) # Species
-pcoa.color <- as.factor(sapply(strsplit(pcoa.cent.treats, "_"), `[`, 1))  # Diet
-
-#Plot
-df1a <- as.data.frame(pcoa.cent.dataframe)
-plot1a <- ggplot(df1a, aes(x=V1, y=V2, colour=pcoa.col, shape = pcoa.shape,
-                 group = interaction(pcoa.shape, pcoa.col))) + theme_bw() 
-plot1a + theme(panel.grid.major = element_blank(), 
-               panel.grid.minor = element_blank(), 
-               axis.line = element_line(colour = "black")) + 
-theme(panel.background = element_blank()) + 
-  geom_errorbarh(aes(xmax=V1+V1e, xmin=V1-V1e, height=0.01), colour="black") +    
-  geom_errorbar(aes(ymax=V2+V2e, ymin=V2-V2e, width=0.01), colour="black") +
-  geom_point(aes(fill=pcoa.col), size=5, stroke = 0.75, show.legend = TRUE) + 
-  scale_colour_manual(labels = c("detritus","egg fed"), 
-                      values = c("darkgreen", "darkorange")) + 
-  scale_fill_manual(labels = c("imitator","variabilis"), 
-                      values = c("darkgreen", "darkorange")) +
-  scale_shape_manual(labels = c("imitator","variabilis"),
-                     values = c(21, 24)) +
-  theme(axis.title = element_text(size=14), axis.text=element_text(size=14),
-          axis.text.x = element_text(size=14), 
-          panel.border = element_rect(colour = "black", size=1.25)) + 
-  theme(axis.ticks.length=unit(0.3,"cm")) + 
-  xlab("PCoA 1 (19.2%)") + ylab("PCoA 2 (13.9%)") + 
-  labs(fill = "Species", shape = "Diet") +
-  guides(fill = guide_legend(override.aes = list(pch=21, size = 4, colour="black")),
-         shape = guide_legend(override.aes = list(size = 4, fill="black")))
-ggsave("../figures/Ordination_TadpoleMicrobiomes.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=9, height=7, dpi=300, limitsize=TRUE)
 ```
 
 ```
