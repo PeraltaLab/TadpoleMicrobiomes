@@ -26,6 +26,7 @@ se <- function(x, ...){sd(x, na.rm = TRUE)/sqrt(length(na.omit(x)))}
 ci <- function(x, ...){1.96 * sd(x,na.rm = TRUE)}
 
 # Code Dependencies
+#install.packages('ggplot2')
 source("../bin/DiversityFunctions.R")
 source("../bin/MothurTools.R")
 require("vegan")
@@ -447,6 +448,17 @@ ggsave("../figures/richness.pdf", plot=last_plot(), device=NULL, path=NULL, scal
 
 ```{r Ordination (PCoA) Bacteria all years, eval=FALSE, include=FALSE}
 # Bacterial Ordinations - full data set 
+# OTU table - remove otus w/ < 2 occurrences across all sites
+otu_removal <- otu[, which(colSums(otu) >= 2)]
+dim(otu_removal) # 5761 OTUs 
+otu <- otu[, which(colSums(otu) >= 2)]
+dim(otu)
+
+# Make Relative Abundance Matrices
+dataREL <- otu
+for(i in 1:dim(otu)[1]){
+  dataREL[i,] <- otu[i,]/sum(otu[i,])
+}
 
 ## Principal Coordinates Ordination# Principal Coordinates Analysis
 dataREL.dist <- vegdist(dataREL, method="bray")
@@ -459,13 +471,18 @@ explainvar1b <- round(pcoa$eig[1] / sum(pcoa$eig), 3) * 100
 explainvar2b <- round(pcoa$eig[2] / sum(pcoa$eig), 3) * 100
 sum.eigb <- sum(explainvar1b, explainvar2b)
 
-explainvar1b #16.0
-explainvar2b #13.5
+explainvar1b #19.2
+explainvar2b #13.9
 ```
 
 ```{r Ordination (PCoA) - Bacteria, eval=FALSE, include=FALSE}
+# PERMANOVA
+#new.data <-cbind(design.final,dataREL)
+new.data <- cbind(design.final,dataREL)
+adonis = adonis(new.data[,-c(1:4)]~Diet*Species, method = "bray", data = new.data, perm=1000)
+adonis
+
 # Principal Coordinates Analysis
-#new.data <-cbind(design_final,dataREL)
 pcoa.groups <- paste(new.data$Diet, new.data$Species, sep = "_")
 pcoa.points <- data.frame(pcoa$points, group = pcoa.groups)
 
@@ -479,38 +496,80 @@ pcoa.centroids.sd <- acast(pcoa.L.centroids, variable ~ group, sd)
 pcoa.cent.dataframe <- cbind(t(pcoa.centroids), t(pcoa.centroids.se))
 colnames(pcoa.cent.dataframe) <- c("V1", "V2", "V1e", "V2e")
 pcoa.cent.treats <- rownames(pcoa.cent.dataframe)
+trt.spp <- c("imitator","variabilis","imitator","variabilis")
+trt.diet <- c("detritus fed", "detritus fed","egg fed","egg fed")
+trt.dietspp <- c("detritus_imitator","detritus_variabilis","egg_imitator","egg_variabilis")
 
-pcoa.col <- as.factor(sapply(strsplit(pcoa.cent.treats, "_"), `[`, 2)) # Species
-pcoa.shape <- as.factor(sapply(strsplit(pcoa.cent.treats, "_"), `[`, 1))  # Diet
+pcoa.cent.dataframe.trts <- as.data.frame(pcoa.cent.dataframe)
+pcoa.cent.dataframe.trts$diet <- as.factor(trt.diet)
+pcoa.cent.dataframe.trts$spp <- as.factor(trt.spp)
+pcoa.cent.dataframe.trts$dietspp <- as.factor(trt.dietspp)
+
+#Plot
+df1a <- as.data.frame(pcoa.cent.dataframe.trts)
+plot1a <- ggplot(df1a, aes(x=V1, y=V2, colour=diet, shape = spp,
+                           group = interaction(dietspp))) + theme_bw() 
+plot1a + theme(panel.grid.major = element_blank(), 
+               panel.grid.minor = element_blank(), 
+               axis.line = element_line(colour = "black")) + 
+theme(panel.background = element_blank()) +
+geom_errorbarh(aes(xmax=V1+V1e, xmin=V1-V1e, height=0.01), colour="black") + geom_errorbar(aes(ymax=V2+V2e, ymin=V2-V2e, width=0.01), colour="black") + 
+geom_point(aes(colour=diet), size=5, stroke = 1.25, show.legend = TRUE) +
+scale_colour_manual(labels = c("detritus fed","egg fed"), 
+                    values = c("darkgreen", "darkorange")) +
+scale_fill_manual(labels = c("detritus fed","egg fed"), 
+                    values = c("darkgreen", "darkorange")) + 
+scale_shape_manual(labels = c("R. imitator","R. variabilis"), 
+                   values = c(16,17)) +
+theme(axis.title = element_text(size=14), axis.text = element_text(size=14),
+      axis.text.x = element_text(size=14), 
+      panel.border = element_rect(colour = "black", size = 1.25)) + 
+theme(axis.ticks.length = unit(0.3, "cm")) + 
+xlab("PCoA 1 (22.2%)") + ylab("PCoA 2 (10.1%)") +
+  labs(colour = "Diet", shape = "Species") +
+  guides(colour = guide_legend(override.aes = list(pch=16, size = 4)),
+         shape = guide_legend(override.aes = list(size = 4)))
+ggsave("../figures/ordination_allspp_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+```
+
+*****
+# Combine
+pcoa.cent.dataframe <- cbind(t(pcoa.centroids), t(pcoa.centroids.se))
+colnames(pcoa.cent.dataframe) <- c("V1", "V2", "V1e", "V2e")
+pcoa.cent.treats <- rownames(pcoa.cent.dataframe)
+
+pcoa.shape <- as.factor(sapply(strsplit(pcoa.cent.treats, "_"), `[`, 2)) # Species
+pcoa.color <- as.factor(sapply(strsplit(pcoa.cent.treats, "_"), `[`, 1))  # Diet
 
 #Plot
 df1a <- as.data.frame(pcoa.cent.dataframe)
 plot1a <- ggplot(df1a, aes(x=V1, y=V2, colour=pcoa.col, shape = pcoa.shape,
-                 group = interaction(pcoa.col, pcoa.shape))) + theme_bw() 
+                 group = interaction(pcoa.shape, pcoa.col))) + theme_bw() 
 plot1a + theme(panel.grid.major = element_blank(), 
                panel.grid.minor = element_blank(), 
                axis.line = element_line(colour = "black")) + 
 theme(panel.background = element_blank()) + 
   geom_errorbarh(aes(xmax=V1+V1e, xmin=V1-V1e, height=0.01), colour="black") +    
   geom_errorbar(aes(ymax=V2+V2e, ymin=V2-V2e, width=0.01), colour="black") +
-  geom_point(aes(fill=pcoa.col), colour = "black", size=5, stroke = 0.75, show.legend = TRUE) + 
-  scale_colour_manual(labels = c("imitator","variabilis"), 
-                      values = c("yellow", "darkgreen")) + 
+  geom_point(aes(fill=pcoa.col), size=5, stroke = 0.75, show.legend = TRUE) + 
+  scale_colour_manual(labels = c("detritus","egg fed"), 
+                      values = c("darkgreen", "darkorange")) + 
   scale_fill_manual(labels = c("imitator","variabilis"), 
-                      values = c("yellow", "darkgreen")) +
-  scale_shape_manual(labels = c("detritus","egg fed"),
+                      values = c("darkgreen", "darkorange")) +
+  scale_shape_manual(labels = c("imitator","variabilis"),
                      values = c(21, 24)) +
   theme(axis.title = element_text(size=14), axis.text=element_text(size=14),
           axis.text.x = element_text(size=14), 
           panel.border = element_rect(colour = "black", size=1.25)) + 
   theme(axis.ticks.length=unit(0.3,"cm")) + 
-  xlab("PCoA 1 (16.0%)") + ylab("PCoA 2 (13.5%)") + 
+  xlab("PCoA 1 (19.2%)") + ylab("PCoA 2 (13.9%)") + 
   labs(fill = "Species", shape = "Diet") +
   guides(fill = guide_legend(override.aes = list(pch=21, size = 4, colour="black")),
          shape = guide_legend(override.aes = list(size = 4, fill="black")))
 ggsave("../figures/Ordination_TadpoleMicrobiomes.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=9, height=7, dpi=300, limitsize=TRUE)
 ```
 
+```
 # Bacterial community indicator species analysis - Diet
 ```{r Bacteria Indicator Species all, eval=FALSE, include=FALSE}
 library("labdsv")
@@ -547,3 +606,80 @@ write.table(indicator.bac, "../data/BacterialIndicators_Diet.txt",
             sep="\t", row.names = F, quote = F)
 ```
 
+# Simple Hypothesis Testing - both spp.
+```{r perMANOVA Bacteria R. variabilis, echo=TRUE}
+# R. variabilis lab egg-fed vs. field detritus-fed
+
+otus.design.variabilis <- subset(otus.design, Species == "variabilis")
+dim(otus.design.variabilis)
+
+design.final.v <- otus.design.variabilis[,c(1:4)] # seaparate design file 
+otu.v <- otus.design.variabilis[,-c(1:4)] # separate otu file 
+
+# OTU table - remove otus w/ < 2 occurrences across all sites
+otu.v <- otu.v[, which(colSums(otu.v) >= 2)]
+dim(otu.v) # 2940 OTUs 
+
+# Make Relative Abundance Matrices
+dataREL.v <- otu.v
+for(i in 1:dim(otu.v)[1]){
+  dataREL.v[i,] <- otu.v[i,]/sum(otu.v[i,])
+}
+
+#PERMANOVA
+new.data.v <-cbind(design.final.v,dataREL.v)
+adonis = adonis(new.data.v[,-c(1:4)]~Diet, method = "bray", data = new.data.v, perm=1000)
+adonis
+
+# Principal Coordinates Analysis
+dataREL.dist <- vegdist(dataREL.v, method="bray")
+
+pcoa <- cmdscale(dataREL.dist, k=3, eig=TRUE, add=FALSE)
+  # Classical (Metric) Multidimensional Scaling; returns PCoA coordinates
+  # eig=TRUE returns eigenvalues; k = # of dimensions to calculate
+
+explainvar1b <- round(pcoa$eig[1] / sum(pcoa$eig), 3) * 100
+explainvar2b <- round(pcoa$eig[2] / sum(pcoa$eig), 3) * 100
+sum.eigb <- sum(explainvar1b, explainvar2b)
+
+explainvar1b #31.7
+explainvar2b #19.3
+
+pcoa.groups <- paste(new.data.v$Diet, new.data.v$Species, sep = "_")
+pcoa.points <- data.frame(pcoa$points, group = pcoa.groups)
+
+# Calculate Centroids (mean and SE)
+pcoa.L.centroids <- melt(pcoa.points, id="group", measure.vars = c("X1", "X2"))
+pcoa.centroids <- acast(pcoa.L.centroids, variable ~ group, mean)
+pcoa.centroids.se <- acast(pcoa.L.centroids, variable ~ group, se)
+pcoa.centroids.sd <- acast(pcoa.L.centroids, variable ~ group, sd)
+
+# Combine
+pcoa.cent.dataframe <- cbind(t(pcoa.centroids), t(pcoa.centroids.se))
+colnames(pcoa.cent.dataframe) <- c("V1", "V2", "V1e", "V2e")
+pcoa.cent.treats <- rownames(pcoa.cent.dataframe)
+
+pcoa.col <- as.factor(sapply(strsplit(pcoa.cent.treats, "_"), `[`, 1))  # Diet
+
+#Plot
+df2a <- as.data.frame(pcoa.cent.dataframe)
+plot1a <- ggplot(df2a, aes(x=V1, y=V2, colour=pcoa.col)) + theme_bw() 
+plot1a + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  theme(panel.background = element_blank()) + 
+  geom_errorbarh(aes(xmax=V1+V1e, xmin=V1-V1e, height=0.01), colour="black") +    
+  geom_errorbar(aes(ymax=V2+V2e, ymin=V2-V2e, width=0.01), colour="black") +
+  geom_point(aes(colour=as.factor(pcoa.col)), size=5, stroke = 0.75, show.legend = TRUE) + 
+  scale_colour_manual(labels = c("detritus fed","egg fed"), 
+                      values = c("darkgreen","darkorange")) +
+  theme(axis.title = element_text(size=14), axis.text=element_text(size=14),
+          axis.text.x = element_text(size=14), 
+          panel.border = element_rect(colour = "black", size=1.25)) + 
+  theme(axis.ticks.length=unit(0.3,"cm")) + 
+  xlab("PCoA 1 (31.7%)") + ylab("PCoA 2 (19.3%)") +
+  labs(colour = "Diet") +
+  guides(colour = guide_legend(override.aes = list(pch=16,size = 4)))+
+  ggtitle(label="R. variabilis") + 
+  theme(plot.title = element_text(color="black", size=14, face="bold.italic"))
+ggsave("../figures/Ordination_variabilis_imitator_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=6, height=6, dpi=300, limitsize=TRUE)
+```
