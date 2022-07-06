@@ -1,7 +1,7 @@
 ---
 title: Comparative Analysis of Feeding Mode and Microbiome Composition in Poison Frog
   Tadpoles
-author: "Kayla Weinfurther, Kyle Summers, Adam Stuckert, Ariane L. Peralta"
+author: "Kayla Weinfurther, Adam Stuckert, Mario Muscarella, Ariane L. Peralta, Kyle Summers"
 date: "Last updated on `r format(Sys.time(), '%d %B, %Y')`"
 output:
   html_document:
@@ -141,25 +141,28 @@ pcoa.col <- as.factor(sapply(strsplit(pcoa.cent.treats, "_"), `[`, 1))  # Diet
 
 #Plot
 df1a <- as.data.frame(pcoa.cent.dataframe)
-plot1a <- ggplot(df1a, aes(x=V1, y=V2, colour=as.factor(pcoa.col))) + theme_bw()
+plot1a <- ggplot(df1a, aes(x=V1, y=V2, colour=as.factor(pcoa.col), shape=as.factor(pcoa.col))) + theme_bw()
 plot1a + 
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   theme(panel.background = element_blank()) + 
   geom_errorbarh(aes(xmax=V1+V1e, xmin=V1-V1e, height=0.01), colour="black") +    
   geom_errorbar(aes(ymax=V2+V2e, ymin=V2-V2e, width=0.01), colour="black") +
   geom_point(aes(colour=as.factor(pcoa.col)), size=5, stroke = 0.75, show.legend = TRUE) + 
-  scale_colour_manual(labels = c("detritus fed","egg fed"), 
-                      values = c("darkgreen","darkorange")) +
+    scale_shape_manual(name = "Diet",
+                     labels = c("detritus fed","egg fed"),
+                     values = c(19, 17))+
+  scale_colour_manual(name = "Diet", 
+                      labels = c("detritus fed","egg fed"), 
+                      values = c("darkgreen","darkorange")) +   
   theme(axis.title = element_text(size=14), axis.text=element_text(size=14),
           axis.text.x = element_text(size=14), 
           panel.border = element_rect(colour = "black", size=1.25)) + 
   theme(axis.ticks.length=unit(0.3,"cm")) + 
   xlab("PCoA 1 (20.5%)") + ylab("PCoA 2 (16.1%)") +
-  labs(colour = "Diet") +
-  guides(colour = guide_legend(override.aes = list(pch=16,size = 4)))+
-  ggtitle(label="R. imitator") + 
+  ggtitle(label="Ranitomeya imitator 16S rRNA Community Composition") + 
   theme(plot.title = element_text(color="black", size=14, face="bold.italic"))
-ggsave("../figures/Ordination_imitator_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=6, height=6, dpi=300, limitsize=TRUE)
+ggsave("../figures/Ordination_imitator_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+ggsave("../figures/Ordination_imitator_diet.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 ```
 # Bacterial community indicator species analysis - R. imitator diet
 ```{r Bacteria Indicator Species i, echo=TRUE}
@@ -254,25 +257,28 @@ pcoa.col <- as.factor(sapply(strsplit(pcoa.cent.treats, "_"), `[`, 1))  # Diet
 
 #Plot
 df2a <- as.data.frame(pcoa.cent.dataframe)
-plot1a <- ggplot(df2a, aes(x=V1, y=V2, colour=pcoa.col)) + theme_bw() 
+plot1a <- ggplot(df2a, aes(x=V1, y=V2, colour=pcoa.col, shape=pcoa.col)) + theme_bw() 
 plot1a + 
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
   theme(panel.background = element_blank()) + 
   geom_errorbarh(aes(xmax=V1+V1e, xmin=V1-V1e, height=0.01), colour="black") +    
   geom_errorbar(aes(ymax=V2+V2e, ymin=V2-V2e, width=0.01), colour="black") +
   geom_point(aes(colour=as.factor(pcoa.col)), size=5, stroke = 0.75, show.legend = TRUE) + 
-  scale_colour_manual(labels = c("detritus fed","egg fed"), 
-                      values = c("darkgreen","darkorange")) +
+  scale_shape_manual(name = "Diet",
+                     labels = c("detritus fed","egg fed"),
+                     values = c(19, 17))+
+  scale_colour_manual(name = "Diet", 
+                      labels = c("detritus fed","egg fed"), 
+                      values = c("darkgreen","darkorange")) +  
   theme(axis.title = element_text(size=14), axis.text=element_text(size=14),
           axis.text.x = element_text(size=14), 
           panel.border = element_rect(colour = "black", size=1.25)) + 
   theme(axis.ticks.length=unit(0.3,"cm")) + 
   xlab("PCoA 1 (31.7%)") + ylab("PCoA 2 (19.3%)") +
-  labs(colour = "Diet") +
-  guides(colour = guide_legend(override.aes = list(pch=16,size = 4)))+
-  ggtitle(label="R. variabilis") + 
+  ggtitle(label="Ranitomeya variabilis 16S rRNA Community Composition") + 
   theme(plot.title = element_text(color="black", size=14, face="bold.italic"))
-ggsave("../figures/Ordination_variabilis_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=6, height=6, dpi=300, limitsize=TRUE)
+ggsave("../figures/Ordination_variabilis_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+ggsave("../figures/Ordination_variabilis_diet.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 ```
 
 # Bacterial community indicator species analysis - R. variabilis diet
@@ -379,12 +385,17 @@ summary(shannon.lm.v)
 #Plot shannon diversity 
 ```{r Plot - Shannon Diversity, echo=TRUE}
 # Graphing Shannon Diversity
-spp.labs <- c("R. imitator", "R. variabilis") #for facet labels
+spp.labs <- c("Ranitomeya imitator", "Ranitomeya variabilis") #for facet labels
 names(spp.labs) <- c("imitator", "variabilis")
 
-p <- ggplot(diversity, aes(x=Diet, y=shannon, color=as.factor(Diet)))+ geom_boxplot() +
+p <- ggplot(diversity, aes(x=Diet, y=shannon, color=as.factor(Diet), shape=as.factor(Diet)))+ geom_boxplot() +
   geom_point(aes(color=factor(Diet)), size=2, position = position_jitterdodge()) +       
-  scale_color_manual(name="Diet", values=c("darkgreen", "darkorange"), labels = c("detritus fed", "egg fed")) +
+  scale_shape_manual(name = "Diet",
+                     labels = c("detritus fed","egg fed"),
+                     values = c(19, 17))+
+  scale_colour_manual(name = "Diet", 
+                      labels = c("detritus fed","egg fed"), 
+                      values = c("darkgreen","darkorange")) +  
   stat_summary(fun.data=mean_cl_boot,size=0.75) 
 p1<-p+facet_wrap(~Species)+facet_grid(. ~ Species,labeller = labeller(Species=spp.labs)) + theme(strip.text = element_text(face = "italic"))
 p1 + theme_bw() + 
@@ -399,14 +410,20 @@ p1 + theme_bw() +
           fill="white", size=1)) + 
           scale_x_discrete(breaks=c("detritus", "egg fed"), labels=c("detritus fed", "egg fed"))
 ggsave("../figures/shannon.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+ggsave("../figures/shannon.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 ```
 
 #Plot Evenness 
 ```{r Plot Simpson Evenness, echo=TRUE}
 # Graphing Simpson's Evenness
-p <- ggplot(diversity, aes(x=Diet, y=simp.even, color=as.factor(Diet)))+ geom_boxplot() +
+p <- ggplot(diversity, aes(x=Diet, y=simp.even, color=as.factor(Diet), shape=as.factor(Diet)))+ geom_boxplot() +
   geom_point(aes(color=factor(Diet)), size=2, position = position_jitterdodge()) +       
-  scale_color_manual(name="Diet", values=c("darkgreen", "darkorange"), labels = c("detritus fed", "egg fed")) +
+  scale_shape_manual(name = "Diet",
+                     labels = c("detritus fed","egg fed"),
+                     values = c(19, 17)) +
+  scale_colour_manual(name = "Diet", 
+                      labels = c("detritus fed","egg fed"), 
+                      values = c("darkgreen","darkorange")) +  
   stat_summary(fun.data=mean_cl_boot,size=0.75) 
 p1<-p+facet_wrap(~Species)+facet_grid(. ~ Species,labeller = labeller(Species=spp.labs)) + theme(strip.text = element_text(face = "italic"))
 p1 + theme_bw() + 
@@ -421,14 +438,20 @@ p1 + theme_bw() +
           fill="white", size=1)) +
           scale_x_discrete(breaks=c("detritus", "egg fed"), labels=c("detritus fed", "egg fed"))
 ggsave("../figures/simp.even.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+ggsave("../figures/simp.even.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 ```
 
 #Plot Richness
 ```{r Plot - OTU richness, echo=TRUE}
 # Graphing Richness
-p <- ggplot(diversity, aes(x=Diet, y=richness, color=as.factor(Diet)))+ geom_boxplot() +
+p <- ggplot(diversity, aes(x=Diet, y=richness, color=as.factor(Diet), shape=as.factor(Diet)))+ geom_boxplot() +
   geom_point(aes(color=factor(Diet)), size=2, position = position_jitterdodge()) +       
-  scale_color_manual(name="Diet", values=c("darkgreen", "darkorange"), labels = c("detritus fed", "egg fed")) +
+  scale_shape_manual(name = "Diet",
+                     labels = c("detritus fed","egg fed"),
+                     values = c(19, 17)) +
+  scale_colour_manual(name = "Diet", 
+                      labels = c("detritus fed","egg fed"), 
+                      values = c("darkgreen","darkorange")) +  
   stat_summary(fun.data=mean_cl_boot,size=0.75) 
 p1=p+facet_wrap(~Species)+facet_grid(. ~ Species,labeller = labeller(Species=spp.labs))
 p1 + theme_bw() + 
@@ -444,6 +467,8 @@ p1 + theme_bw() +
           scale_x_discrete(breaks=c("detritus", "egg fed"), labels=c("detritus fed", "egg fed"))
   
 ggsave("../figures/richness.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+ggsave("../figures/richness.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+
 ```
 
 ```{r Ordination (PCoA) Bacteria all years, eval=FALSE, include=FALSE}
@@ -476,6 +501,7 @@ explainvar1b #19.2
 explainvar2b #13.9
 ```
 
+# Bacterial community composition analysis - Species x Diet
 ```{r Ordination (PCoA) - Bacteria, eval=FALSE, include=FALSE}
 # PERMANOVA
 #new.data <-cbind(design.final,dataREL)
@@ -533,8 +559,7 @@ xlab("PCoA 1 (22.2%)") + ylab("PCoA 2 (10.1%)") +
 ggsave("../figures/ordination_allspp_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 ```
 
-```
-# Bacterial community indicator species analysis - Diet
+# Bacterial community indicator species analysis - Species x Diet
 ```{r Bacteria Indicator Species all, eval=FALSE, include=FALSE}
 library("labdsv")
 
@@ -568,82 +593,4 @@ levels(design.type)
 # Export Bacteria Indicator Table
 write.table(indicator.bac, "../data/BacterialIndicators_Diet.txt",
             sep="\t", row.names = F, quote = F)
-```
-
-# Simple Hypothesis Testing - both spp.
-```{r perMANOVA Bacteria R. variabilis, echo=TRUE}
-# R. variabilis lab egg-fed vs. field detritus-fed
-
-otus.design.variabilis <- subset(otus.design, Species == "variabilis")
-dim(otus.design.variabilis)
-
-design.final.v <- otus.design.variabilis[,c(1:4)] # seaparate design file 
-otu.v <- otus.design.variabilis[,-c(1:4)] # separate otu file 
-
-# OTU table - remove otus w/ < 2 occurrences across all sites
-otu.v <- otu.v[, which(colSums(otu.v) >= 2)]
-dim(otu.v) # 2940 OTUs 
-
-# Make Relative Abundance Matrices
-dataREL.v <- otu.v
-for(i in 1:dim(otu.v)[1]){
-  dataREL.v[i,] <- otu.v[i,]/sum(otu.v[i,])
-}
-
-#PERMANOVA
-new.data.v <-cbind(design.final.v,dataREL.v)
-adonis = adonis(new.data.v[,-c(1:4)]~Diet, method = "bray", data = new.data.v, perm=1000)
-adonis
-
-# Principal Coordinates Analysis
-dataREL.dist <- vegdist(dataREL.v, method="bray")
-
-pcoa <- cmdscale(dataREL.dist, k=3, eig=TRUE, add=FALSE)
-  # Classical (Metric) Multidimensional Scaling; returns PCoA coordinates
-  # eig=TRUE returns eigenvalues; k = # of dimensions to calculate
-
-explainvar1b <- round(pcoa$eig[1] / sum(pcoa$eig), 3) * 100
-explainvar2b <- round(pcoa$eig[2] / sum(pcoa$eig), 3) * 100
-sum.eigb <- sum(explainvar1b, explainvar2b)
-
-explainvar1b #31.7
-explainvar2b #19.3
-
-pcoa.groups <- paste(new.data.v$Diet, new.data.v$Species, sep = "_")
-pcoa.points <- data.frame(pcoa$points, group = pcoa.groups)
-
-# Calculate Centroids (mean and SE)
-pcoa.L.centroids <- melt(pcoa.points, id="group", measure.vars = c("X1", "X2"))
-pcoa.centroids <- acast(pcoa.L.centroids, variable ~ group, mean)
-pcoa.centroids.se <- acast(pcoa.L.centroids, variable ~ group, se)
-pcoa.centroids.sd <- acast(pcoa.L.centroids, variable ~ group, sd)
-
-# Combine
-pcoa.cent.dataframe <- cbind(t(pcoa.centroids), t(pcoa.centroids.se))
-colnames(pcoa.cent.dataframe) <- c("V1", "V2", "V1e", "V2e")
-pcoa.cent.treats <- rownames(pcoa.cent.dataframe)
-
-pcoa.col <- as.factor(sapply(strsplit(pcoa.cent.treats, "_"), `[`, 1))  # Diet
-
-#Plot
-df2a <- as.data.frame(pcoa.cent.dataframe)
-plot1a <- ggplot(df2a, aes(x=V1, y=V2, colour=pcoa.col)) + theme_bw() 
-plot1a + 
-  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
-  theme(panel.background = element_blank()) + 
-  geom_errorbarh(aes(xmax=V1+V1e, xmin=V1-V1e, height=0.01), colour="black") +    
-  geom_errorbar(aes(ymax=V2+V2e, ymin=V2-V2e, width=0.01), colour="black") +
-  geom_point(aes(colour=as.factor(pcoa.col)), size=5, stroke = 0.75, show.legend = TRUE) + 
-  scale_colour_manual(labels = c("detritus fed","egg fed"), 
-                      values = c("darkgreen","darkorange")) +
-  theme(axis.title = element_text(size=14), axis.text=element_text(size=14),
-          axis.text.x = element_text(size=14), 
-          panel.border = element_rect(colour = "black", size=1.25)) + 
-  theme(axis.ticks.length=unit(0.3,"cm")) + 
-  xlab("PCoA 1 (31.7%)") + ylab("PCoA 2 (19.3%)") +
-  labs(colour = "Diet") +
-  guides(colour = guide_legend(override.aes = list(pch=16,size = 4)))+
-  ggtitle(label="R. variabilis") + 
-  theme(plot.title = element_text(color="black", size=14, face="bold.italic"))
-ggsave("../figures/Ordination_variabilis_imitator_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=6, height=6, dpi=300, limitsize=TRUE)
 ```
