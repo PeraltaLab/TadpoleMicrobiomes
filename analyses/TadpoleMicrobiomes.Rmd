@@ -50,9 +50,14 @@ design <- read.csv("../data/poison_tadpole_design.csv", row.names=1)
 ```
 ## Bacterial Data
 ```{r Import Files - Bacteria, include=FALSE}
-# Import OTU data
-# Import Raw Data
+# Import 16S OTU data
 otu.in <- read.otu("../data/tadpole.trim.contigs.good.unique.good.filter.unique.precluster.pick.pick.pick.opti_mcc.shared")
+```
+## Eukaryote Data
+```{r}
+# Import 18S OTU Data
+euk.otu.in <- read.otu("../mothur/MicroEuk.final.shared")
+
 ```
 
 ```{r Match design and otu IDs, include=FALSE}
@@ -106,7 +111,7 @@ for(i in 1:dim(otu.i)[1]){
 
 #PERMANOVA
 new.data.i <-cbind(design.final.i,dataREL.i)
-adonis = adonis(new.data.i[,-c(1:4)]~Diet, method = "bray", data = new.data.i, perm=1000)
+adonis = adonis2(new.data.i[,-c(1:4)]~Diet, method = "bray", data = new.data.i, perm=1000)
 adonis
 
 # Principal Coordinates Analysis
@@ -647,3 +652,11 @@ plot1a +
   theme(plot.title = element_text(color="black", size=14, face="bold.italic"))
 ggsave("../figures/Ordination_variabilis_imitator_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=6, height=6, dpi=300, limitsize=TRUE)
 ```
+
+
+
+# Micro Euks
+```{r}
+
+```
+
