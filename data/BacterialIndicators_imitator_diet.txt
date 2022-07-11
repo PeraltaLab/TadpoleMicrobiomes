@@ -1,4 +1,4 @@
 OTU	Cluster	IndVal	Prob	Domain	Phylum	Class	Order	Family	Genus
-Otu0008	1	0.916426357732435	0.05	Bacteria	Bacteroidetes	Bacteroidia	Bacteroidales	Bacteroidaceae	Bacteroides
-Otu0011	2	0.949789582291113	0.019	Bacteria	Bacteria_unclassified	Bacteria_unclassified	Bacteria_unclassified	Bacteria_unclassified	Bacteria_unclassified
-Otu0014	2	0.855154511356466	0.04	Bacteria	Proteobacteria	Deltaproteobacteria	Desulfovibrionales	Desulfovibrionaceae	Desulfovibrio
+Otu0003	2	0.884409412106168	0.043	Bacteria	Proteobacteria	Gammaproteobacteria	Aeromonadales	Aeromonadaceae	Aeromonas
+Otu0011	2	0.949789582291113	0.027	Bacteria	Bacteria_unclassified	Bacteria_unclassified	Bacteria_unclassified	Bacteria_unclassified	Bacteria_unclassified
+Otu0014	2	0.855154511356466	0.033	Bacteria	Proteobacteria	Deltaproteobacteria	Desulfovibrionales	Desulfovibrionaceae	Desulfovibrio
