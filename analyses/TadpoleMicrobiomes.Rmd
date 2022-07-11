@@ -19,8 +19,8 @@ Project Description: Fill out
 
 # Initial Setup
 ```{r Initial Setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-rm(list=ls())
+#knitr::opts_chunk$set(echo = TRUE)
+#rm(list=ls())
 setwd("~/GitHub/TadpoleMicrobiomes/analyses")
 se <- function(x, ...){sd(x, na.rm = TRUE)/sqrt(length(na.omit(x)))}
 ci <- function(x, ...){1.96 * sd(x,na.rm = TRUE)}
@@ -69,8 +69,8 @@ otus.design <- cbind(design_final,otu)
 otus.design.sub <- subset(otus.design, Location != "NA") #removed R. imitator/egg fed/lab
 dim(otus.design.sub)
 
-design.final <- otus.design.sub[,c(1:4)] # seaparate design file after removinng NA
-otu <- otus.design.sub[,-c(1:4)] # separate otu file after removinng NA
+design.final <- otus.design.sub[,c(1:4)] # separate design file after removing NA
+otu <- otus.design.sub[,-c(1:4)] # separate otu file after removing NA
 
 # OTU table - remove otus w/ < 2 occurrences across all sites
 otu <- otu[, which(colSums(otu) >= 2)]
@@ -340,7 +340,7 @@ J <- shannon/log(specnumber(otus.r[,-c(1:1)]))
 
 #combined richness, diversity, evenness
 diversity <- cbind(design.final,richness,shannon,simp.even,J)
-write.csv(diversity,"../data/diversity.bact.raw.csv")
+#write.csv(diversity,"../data/diversity.bact.raw.csv")
 ```
 
 # Diversity Metrics - Hypothesis Testing - by species
