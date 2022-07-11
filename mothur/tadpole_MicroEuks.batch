@@ -1,0 +1,36 @@
+# Tadpole Micro Euk (18S) Analysis: Last Update, 15-Jun-22 MEM, Rita Server, Mothur: 1.48.0
+# Load Mothur (Chinook): source /center1/MICROBES/Mothur/mothur-1.46.1/setEnvironment.sh
+# Load Mothur (Rita): export PATH=$PATH:/usr/local/MOTHUR/bin
+#
+# make.file(inputdir=../raw, type=fastq, prefix=tadpole18S) # Only run this once and then clean it up and rename as needed 
+#
+make.contigs(file=../analysis/tadpole18S.files, oligos=../analysis/tadpole18S.oligos, checkorient=t, trimoverlap=t, processors=20, inputdir=../raw/, outputdir=../analysis/)
+summary.seqs(fasta=tadpole18S.trim.contigs.fasta, count=tadpole18S.contigs.count_table, inputdir=../analysis, processors=20)
+screen.seqs(fasta=tadpole18S.trim.contigs.fasta, count=tadpole18S.contigs.count_table, summary=tadpole18S.trim.contigs.summary, maxambig=0, maxlength=150)
+summary.seqs(fasta=tadpole18S.trim.contigs.good.fasta, count=tadpole18S.contigs.good.count_table, processors=20)
+unique.seqs(fasta=tadpole18S.trim.contigs.good.fasta, count=tadpole18S.contigs.good.count_table)
+summary.seqs(fasta=tadpole18S.trim.contigs.good.unique.fasta, count=tadpole18S.trim.contigs.good.count_table)
+align.seqs(fasta=tadpole18S.trim.contigs.good.unique.fasta, reference=../../../dbs/silva.nr_v132.align)
+summary.seqs(fasta=tadpole18S.trim.contigs.good.unique.align, count=tadpole18S.trim.contigs.good.count_table)
+screen.seqs(fasta=tadpole18S.trim.contigs.good.unique.align, count=tadpole18S.trim.contigs.good.count_table, summary=tadpole18S.trim.contigs.good.unique.summary, start=42554, end=43116, minlength=100, maxhomop=8)
+summary.seqs(fasta=tadpole18S.trim.contigs.good.unique.good.align, count=tadpole18S.trim.contigs.good.good.count_table)
+filter.seqs(fasta=tadpole18S.trim.contigs.good.unique.good.align, vertical=T, trump=.)
+unique.seqs(fasta=tadpole18S.trim.contigs.good.unique.good.filter.fasta, count=tadpole18S.trim.contigs.good.good.count_table)
+summary.seqs(fasta=tadpole18S.trim.contigs.good.unique.good.filter.unique.fasta, count=tadpole18S.trim.contigs.good.unique.good.filter.count_table)
+pre.cluster(fasta=tadpole18S.trim.contigs.good.unique.good.filter.unique.fasta, count=tadpole18S.trim.contigs.good.unique.good.filter.count_table, diffs=2)
+chimera.vsearch(fasta=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.fasta, count=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.count_table, dereplicate=t)
+remove.seqs(fasta=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.fasta, count=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.count_table, accnos=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.accnos)
+summary.seqs(fasta=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.fasta, count=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.count_table)
+classify.seqs(fasta=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.fasta, count=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.count_table, reference=../../../dbs/silva.nr_v132.align, taxonomy=../../../dbs/silva.nr_v132.tax, cutoff=80)
+
+
+remove.lineage(fasta=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.fasta, count=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.count_table, taxonomy=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.nr_v132.wang.taxonomy, taxon=unknown-Vertebrata)
+summary.tax(taxonomy=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.nr_v132.wang.pick.taxonomy, count=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table)
+summary.seqs(fasta=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.fasta, count=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table)
+cluster.split(fasta=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.fasta, count=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table, taxonomy=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.nr_v132.wang.pick.taxonomy, splitmethod=classify, taxlevel=4, cutoff=0.03, processors=4)
+make.shared(list=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.opti_mcc.list, count=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table, label=0.03)
+classify.otu(list=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.opti_mcc.list, count=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table, taxonomy=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.nr_v132.wang.pick.taxonomy, label=0.03)
+get.oturep(list=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.opti_mcc.list, fasta=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.fasta, count=tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.count_table, method=abundance, label=0.03)
+system(cp ./tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.opti_mcc.shared ./MicroEuk.final.shared)
+system(cp ./tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.opti_mcc.0.03.cons.taxonomy ./MicroEuk.final.taxonomy)
+system(cp ./tadpole18S.trim.contigs.good.unique.good.filter.unique.precluster.denovo.vsearch.pick.opti_mcc.0.03.rep.fasta ./MicroEuk.final.rep.fasta)
