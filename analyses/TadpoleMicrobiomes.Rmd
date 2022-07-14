@@ -910,25 +910,13 @@ xlab("PCoA 1 (26.5%)") + ylab("PCoA 2 (16.0%)") +
 ggsave("../figures/18Sordination_allspp_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 
 
+```
 
 
-
-
-=======
-```{r eval=FALSE, include=FALSE}
->>>>>>> upstream/master
-
-
-<<<<<<< HEAD
 # Otu3587 Abundance
 ```{r}
 OTU3587 <- euk.otu[ , which(colnames(euk.otu) == "Otu3587")]
 
-
 ```
 
 
-=======
-=======
-```
->>>>>>> upstream/master
