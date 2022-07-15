@@ -601,8 +601,322 @@ write.table(indicator.bac, "../data/BacterialIndicators_Diet.txt",
 ```
 
 # Micro Euks
-```{r eval=FALSE, include=FALSE}
+<<<<<<< HEAD
+```{r}
+# Correct Sample IDs and Subset File - match up design file and otu files
+missing <- setdiff(rownames(design), rownames(euk.otu.in)) 
+design_final <- design[-(which(rownames(design) %in% missing)), ]
+dim(design_final)
+euk.otu <- euk.otu.in
+dim(euk.otu)
+euk.otu <- euk.otu[match(rownames(design_final), rownames(euk.otu)),]
+all.equal(rownames(euk.otu), rownames(design_final))
 
+euk.otus.design <- cbind(design_final,euk.otu)
+euk.otus.design.sub <- subset(euk.otus.design, Location != "NA") #removed R. imitator/egg fed/lab
+dim(euk.otus.design.sub)
 
-=======
+euk.design.final <- euk.otus.design.sub[,c(1:4)] # seaparate design file after removinng NA
+euk.otu <- euk.otus.design.sub[,-c(1:4)] # separate otu file after removinng NA
+
+# OTU table - remove otus w/ < 2 occurrences across all sites
+euk.otu <- euk.otu[, which(colSums(euk.otu) >= 2)]
+dim(euk.otu) #went to 2113 OTUs
+
+# Coverage
+aa <- (rowSums(euk.otu))
+aa
+
+tadpole.euk.tax <- read.tax(taxonomy = "../mothur/MicroEuk.final.taxonomy", 
+                            format = "rdp", tax.levels = 6, col.tax = 3)
+tadpole.euk.tax <- tadpole.euk.tax[which(tadpole.euk.tax$OTU %in% colnames(euk.otu)), ]
 ```
+
+# MicroEuk Transformation and Alpha Diversity
+```{r}
+# Make Relative Abundance Matrices
+euk.dataREL <- euk.otu
+for(i in 1:dim(euk.dataREL)[1]){euk.dataREL[i,] <- euk.dataREL[i,]/sum(euk.dataREL[i,])
+}
+
+# Make Presence Absence Matrices
+euk.dataPA <- (euk.otu > 0) * 1
+
+# Richness
+euk.R <- estimateR(euk.otu)
+
+richness <- euk.R[2, ]
+
+# Evenness
+euk.Hinv <- diversity(euk.otu, "invsimpson")
+euk.even <- euk.Hinv / euk.R[1, ]
+
+
+# Combine
+euk.diversity <- cbind(euk.design.final,richness, euk.even)
+
+spp.labs <- c("Ranitomeya imitator", "Ranitomeya variabilis") #for facet labels
+names(spp.labs) <- c("imitator", "variabilis")
+
+# Graphing Richness
+p <- ggplot(euk.diversity, aes(x=Diet, y=richness, color=as.factor(Diet), 
+                               shape=as.factor(Diet)))+ geom_boxplot() +
+  geom_point(aes(color=factor(Diet)), size=2, position = position_jitterdodge()) +       
+  scale_shape_manual(name = "Diet",
+                     labels = c("detritus fed","egg fed"),
+                     values = c(19, 17)) +
+  scale_colour_manual(name = "Diet", 
+                      labels = c("detritus fed","egg fed"), 
+                      values = c("darkgreen","darkorange")) +  
+  stat_summary(fun.data=mean_cl_boot,size=0.75) 
+p1=p+facet_wrap(~Species)+facet_grid(. ~ Species,labeller = labeller(Species=spp.labs))
+p1 + theme_bw() + 
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line 
+          =element_line(colour = "black")) + 
+    theme(axis.title=element_text(vjust=1,size=14,face="bold"),
+          axis.text=element_text(size=14), axis.text.x = element_text(vjust=0.65, hjust=0.5, 
+          size=14), panel.border = element_rect(colour = "black",size=1)) + 
+    theme(axis.ticks.length=unit(0.3,"cm")) + labs(x = "Diet", y = "18S OTU Richness") + 
+    theme(strip.text.x = element_text(size=14, face="italic"), strip.text.y =   
+          element_text(size=14, face="bold"), strip.background = element_rect(colour="black",
+          fill="white", size=1)) +
+          scale_x_discrete(breaks=c("detritus", "egg fed"), labels=c("detritus fed", "egg fed"))
+  
+ggsave("../figures/18Srichness.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+ggsave("../figures/18Srichness.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+
+
+# Graphing Richness
+p <- ggplot(euk.diversity, aes(x=Diet, y=euk.even, color=as.factor(Diet), 
+                               shape=as.factor(Diet)))+ geom_boxplot() +
+  geom_point(aes(color=factor(Diet)), size=2, position = position_jitterdodge()) +       
+  scale_shape_manual(name = "Diet",
+                     labels = c("detritus fed","egg fed"),
+                     values = c(19, 17)) +
+  scale_colour_manual(name = "Diet", 
+                      labels = c("detritus fed","egg fed"), 
+                      values = c("darkgreen","darkorange")) +  
+  stat_summary(fun.data=mean_cl_boot,size=0.75) 
+p1=p+facet_wrap(~Species)+facet_grid(. ~ Species,labeller = labeller(Species=spp.labs))
+p1 + theme_bw() + 
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line 
+          =element_line(colour = "black")) + 
+    theme(axis.title=element_text(vjust=1,size=14,face="bold"),
+          axis.text=element_text(size=14), axis.text.x = element_text(vjust=0.65, hjust=0.5, 
+          size=14), panel.border = element_rect(colour = "black",size=1)) + 
+    theme(axis.ticks.length=unit(0.3,"cm")) + labs(x = "Diet", y = "18S OTU Evenness") + 
+    theme(strip.text.x = element_text(size=14, face="italic"), strip.text.y =   
+          element_text(size=14, face="bold"), strip.background = element_rect(colour="black",
+          fill="white", size=1)) +
+          scale_x_discrete(breaks=c("detritus", "egg fed"), labels=c("detritus fed", "egg fed"))
+  
+ggsave("../figures/18Sevenness.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+ggsave("../figures/18Sevenness.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+
+
+```
+
+# Community Split by Species
+```{r}
+#Ranitomeya variabilis
+row.names(euk.dataREL) == row.names(euk.design.final)
+euk.dataREL.v <- euk.dataREL[which(euk.design.final$Species == "variabilis"), ]
+dataREL.dist <- vegdist(euk.dataREL.v, method="bray")
+
+pcoa <- cmdscale(dataREL.dist, k=3, eig=TRUE, add=FALSE)
+  # Classical (Metric) Multidimensional Scaling; returns PCoA coordinates
+  # eig=TRUE returns eigenvalues; k = # of dimensions to calculate
+
+explainvar1b <- round(pcoa$eig[1] / sum(pcoa$eig), 3) * 100
+explainvar2b <- round(pcoa$eig[2] / sum(pcoa$eig), 3) * 100
+sum.eigb <- sum(explainvar1b, explainvar2b)
+
+explainvar1b #33.8
+explainvar2b #18.S
+
+new.data <- euk.design.final[which(rownames(euk.design.final) %in% rownames(pcoa$points)), ]
+pcoa.groups <- paste(new.data$Diet, new.data$Species, sep = "_")
+pcoa.points <- data.frame(pcoa$points, group = pcoa.groups)
+
+# Calculate Centroids (mean and SE)
+pcoa.L.centroids <- melt(pcoa.points, id="group", measure.vars = c("X1", "X2"))
+pcoa.centroids <- acast(pcoa.L.centroids, variable ~ group, mean)
+pcoa.centroids.se <- acast(pcoa.L.centroids, variable ~ group, se)
+pcoa.centroids.sd <- acast(pcoa.L.centroids, variable ~ group, sd)
+
+# Combine
+pcoa.cent.dataframe <- cbind(t(pcoa.centroids), t(pcoa.centroids.se))
+colnames(pcoa.cent.dataframe) <- c("V1", "V2", "V1e", "V2e")
+pcoa.cent.treats <- rownames(pcoa.cent.dataframe)
+
+pcoa.col <- as.factor(sapply(strsplit(pcoa.cent.treats, "_"), `[`, 1))  # Diet
+
+#Plot
+df2a <- as.data.frame(pcoa.cent.dataframe)
+plot1a <- ggplot(df2a, aes(x=V1, y=V2, colour=pcoa.col, shape=pcoa.col)) + theme_bw() 
+plot1a + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  theme(panel.background = element_blank()) + 
+  geom_errorbarh(aes(xmax=V1+V1e, xmin=V1-V1e, height=0.01), colour="black") +    
+  geom_errorbar(aes(ymax=V2+V2e, ymin=V2-V2e, width=0.01), colour="black") +
+  geom_point(aes(colour=as.factor(pcoa.col)), size=5, stroke = 0.75, show.legend = TRUE) + 
+  scale_shape_manual(name = "Diet",
+                     labels = c("detritus fed","egg fed"),
+                     values = c(19, 17))+
+  scale_colour_manual(name = "Diet", 
+                      labels = c("detritus fed","egg fed"), 
+                      values = c("darkgreen","darkorange")) +  
+  theme(axis.title = element_text(size=14), axis.text=element_text(size=14),
+          axis.text.x = element_text(size=14), 
+          panel.border = element_rect(colour = "black", size=1.25)) + 
+  theme(axis.ticks.length=unit(0.3,"cm")) + 
+  xlab("PCoA 1 (33.8%)") + ylab("PCoA 2 (18.3%)") +
+  ggtitle(label="Ranitomeya variabilis 16S rRNA Community Composition") + 
+  theme(plot.title = element_text(color="black", size=14, face="bold.italic"))
+ggsave("../figures/18SOrdination_variabilis_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+ggsave("../figures/18SOrdination_variabilis_diet.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+
+
+#Ranitomeya imitator
+row.names(euk.dataREL) == row.names(euk.design.final)
+euk.dataREL.i <- euk.dataREL[which(euk.design.final$Species == "imitator"), ]
+dataREL.dist <- vegdist(euk.dataREL.i, method="bray")
+
+pcoa <- cmdscale(dataREL.dist, k=3, eig=TRUE, add=FALSE)
+  # Classical (Metric) Multidimensional Scaling; returns PCoA coordinates
+  # eig=TRUE returns eigenvalues; k = # of dimensions to calculate
+
+explainvar1b <- round(pcoa$eig[1] / sum(pcoa$eig), 3) * 100
+explainvar2b <- round(pcoa$eig[2] / sum(pcoa$eig), 3) * 100
+sum.eigb <- sum(explainvar1b, explainvar2b)
+
+explainvar1b #34.3
+explainvar2b #26.0
+
+new.data <- euk.design.final[which(rownames(euk.design.final) %in% rownames(pcoa$points)), ]
+pcoa.groups <- paste(new.data$Diet, new.data$Species, sep = "_")
+pcoa.points <- data.frame(pcoa$points, group = pcoa.groups)
+
+# Calculate Centroids (mean and SE)
+pcoa.L.centroids <- melt(pcoa.points, id="group", measure.vars = c("X1", "X2"))
+pcoa.centroids <- acast(pcoa.L.centroids, variable ~ group, mean)
+pcoa.centroids.se <- acast(pcoa.L.centroids, variable ~ group, se)
+pcoa.centroids.sd <- acast(pcoa.L.centroids, variable ~ group, sd)
+
+# Combine
+pcoa.cent.dataframe <- cbind(t(pcoa.centroids), t(pcoa.centroids.se))
+colnames(pcoa.cent.dataframe) <- c("V1", "V2", "V1e", "V2e")
+pcoa.cent.treats <- rownames(pcoa.cent.dataframe)
+
+pcoa.col <- as.factor(sapply(strsplit(pcoa.cent.treats, "_"), `[`, 1))  # Diet
+
+#Plot
+df2a <- as.data.frame(pcoa.cent.dataframe)
+plot1a <- ggplot(df2a, aes(x=V1, y=V2, colour=pcoa.col, shape=pcoa.col)) + theme_bw() 
+plot1a + 
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))+
+  theme(panel.background = element_blank()) + 
+  geom_errorbarh(aes(xmax=V1+V1e, xmin=V1-V1e, height=0.01), colour="black") +    
+  geom_errorbar(aes(ymax=V2+V2e, ymin=V2-V2e, width=0.01), colour="black") +
+  geom_point(aes(colour=as.factor(pcoa.col)), size=5, stroke = 0.75, show.legend = TRUE) + 
+  scale_shape_manual(name = "Diet",
+                     labels = c("detritus fed","egg fed"),
+                     values = c(19, 17))+
+  scale_colour_manual(name = "Diet", 
+                      labels = c("detritus fed","egg fed"), 
+                      values = c("darkgreen","darkorange")) +  
+  theme(axis.title = element_text(size=14), axis.text=element_text(size=14),
+          axis.text.x = element_text(size=14), 
+          panel.border = element_rect(colour = "black", size=1.25)) + 
+  theme(axis.ticks.length=unit(0.3,"cm")) + 
+  xlab("PCoA 1 (34.3%)") + ylab("PCoA 2 (26.0%)") +
+  ggtitle(label="Ranitomeya imitator 16S rRNA Community Composition") + 
+  theme(plot.title = element_text(color="black", size=14, face="bold.italic"))
+ggsave("../figures/18SOrdination_imitator_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+ggsave("../figures/18SOrdination_imitator_diet.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+
+```
+
+# MicroEuk community composition analysis - Species x Diet
+```{r Ordination (PCoA) - Euks, eval=FALSE, include=FALSE}
+# PERMANOVA
+adonis.euk = adonis2(euk.otu~euk.design.final$Diet*euk.design.final$Species,
+                     method = "bray", perm=1000)
+adonis.euk
+
+# Principal Coordinates Analysis
+euk.dataREL.dist <- vegdist(euk.dataREL, method="bray")
+
+euk.pcoa <- cmdscale(euk.dataREL.dist, k=3, eig=TRUE, add=FALSE)
+  # Classical (Metric) Multidimensional Scaling; returns PCoA coordinates
+  # eig=TRUE returns eigenvalues; k = # of dimensions to calculate
+
+explainvar1b <- round(euk.pcoa$eig[1] / sum(euk.pcoa$eig), 3) * 100
+explainvar2b <- round(euk.pcoa$eig[2] / sum(euk.pcoa$eig), 3) * 100
+sum.eigb <- sum(explainvar1b, explainvar2b)
+
+explainvar1b #26.5
+explainvar2b #16
+
+# Principal Coordinates Analysis
+pcoa.groups <- paste(euk.design.final$Diet, euk.design.final$Species, sep = "_")
+pcoa.points <- data.frame(pcoa$points, group = pcoa.groups)
+
+# Calculate Centroids (mean and SE)
+pcoa.L.centroids <- melt(pcoa.points, id="group", measure.vars = c("X1", "X2"))
+pcoa.centroids <- acast(pcoa.L.centroids, variable ~ group, mean)
+pcoa.centroids.se <- acast(pcoa.L.centroids, variable ~ group, se)
+pcoa.centroids.sd <- acast(pcoa.L.centroids, variable ~ group, sd)
+
+# Combine
+pcoa.cent.dataframe <- cbind(t(pcoa.centroids), t(pcoa.centroids.se))
+colnames(pcoa.cent.dataframe) <- c("V1", "V2", "V1e", "V2e")
+pcoa.cent.treats <- rownames(pcoa.cent.dataframe)
+trt.spp <- c("imitator","variabilis","imitator","variabilis")
+trt.diet <- c("detritus fed", "detritus fed","egg fed","egg fed")
+trt.dietspp <- c("detritus_imitator","detritus_variabilis","egg_imitator","egg_variabilis")
+
+pcoa.cent.dataframe.trts <- as.data.frame(pcoa.cent.dataframe)
+pcoa.cent.dataframe.trts$diet <- as.factor(trt.diet)
+pcoa.cent.dataframe.trts$spp <- as.factor(trt.spp)
+pcoa.cent.dataframe.trts$dietspp <- as.factor(trt.dietspp)
+
+#Plot
+df1a <- as.data.frame(pcoa.cent.dataframe.trts)
+plot1a <- ggplot(df1a, aes(x=V1, y=V2, colour=diet, shape = spp,
+                           group = interaction(dietspp))) + theme_bw() 
+plot1a + theme(panel.grid.major = element_blank(), 
+               panel.grid.minor = element_blank(), 
+               axis.line = element_line(colour = "black")) + 
+theme(panel.background = element_blank()) +
+geom_errorbarh(aes(xmax=V1+V1e, xmin=V1-V1e, height=0.01), colour="black") + geom_errorbar(aes(ymax=V2+V2e, ymin=V2-V2e, width=0.01), colour="black") + 
+geom_point(aes(colour=diet), size=5, stroke = 1.25, show.legend = TRUE) +
+scale_colour_manual(labels = c("detritus fed","egg fed"), 
+                    values = c("darkgreen", "darkorange")) +
+scale_fill_manual(labels = c("detritus fed","egg fed"), 
+                    values = c("darkgreen", "darkorange")) + 
+scale_shape_manual(labels = c("R. imitator","R. variabilis"), 
+                   values = c(16,17)) +
+theme(axis.title = element_text(size=14), axis.text = element_text(size=14),
+      axis.text.x = element_text(size=14), 
+      panel.border = element_rect(colour = "black", size = 1.25)) + 
+theme(axis.ticks.length = unit(0.3, "cm")) + 
+xlab("PCoA 1 (26.5%)") + ylab("PCoA 2 (16.0%)") +
+  ggtitle(label="Ranitomeya 18S rRNA Community Composition") + 
+  theme(plot.title = element_text(color="black", size=14, face="bold.italic")) +
+  labs(colour = "Diet", shape = "Species") +
+  guides(colour = guide_legend(override.aes = list(pch=16, size = 4)),
+         shape = guide_legend(override.aes = list(size = 4)))
+ggsave("../figures/18Sordination_allspp_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+
+
+```
+
+
+# Otu3587 Abundance
+```{r}
+OTU3587 <- euk.otu[ , which(colnames(euk.otu) == "Otu3587")]
+
+```
+
+

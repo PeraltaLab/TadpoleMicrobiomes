@@ -1,2 +1,2 @@
 OTU	Cluster	IndVal	Prob	Domain	Phylum	Class	Order	Family	Genus
-Otu0005	1	0.749395047215413	0.003	Bacteria	Bacteroidetes	Bacteroidia	Bacteroidales	Rikenellaceae	Mucinivorans
+Otu0005	1	0.749395047215413	0.001	Bacteria	Bacteroidetes	Bacteroidia	Bacteroidales	Rikenellaceae	Mucinivorans
