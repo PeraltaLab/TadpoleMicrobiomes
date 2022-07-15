@@ -57,7 +57,6 @@ otu.in <- read.otu("../data/tadpole.trim.contigs.good.unique.good.filter.unique.
 ```{r}
 # Import 18S OTU Data
 euk.otu.in <- read.otu("../mothur/MicroEuk.final.shared")
-
 ```
 
 ```{r Match design and otu IDs, include=FALSE}
@@ -633,7 +632,7 @@ tadpole.euk.tax <- tadpole.euk.tax[which(tadpole.euk.tax$OTU %in% colnames(euk.o
 ```
 
 # MicroEuk Transformation and Alpha Diversity
-```{r}
+```{r MicrEuk alpha diversity, echo=TRUE}
 # Make Relative Abundance Matrices
 euk.dataREL <- euk.otu
 for(i in 1:dim(euk.dataREL)[1]){euk.dataREL[i,] <- euk.dataREL[i,]/sum(euk.dataREL[i,])
@@ -651,9 +650,42 @@ richness <- euk.R[2, ]
 euk.Hinv <- diversity(euk.otu, "invsimpson")
 euk.even <- euk.Hinv / euk.R[1, ]
 
+# Shannon Diversity
+shannon <- diversity(euk.otu, "shannon")
 
 # Combine
-euk.diversity <- cbind(euk.design.final,richness, euk.even)
+euk.diversity <- cbind(euk.design.final,richness, euk.even, shannon)
+
+library(lmerTest) 
+str(euk.diversity)
+euk.diversity$Species <- as.factor(euk.diversity$Species)
+euk.diversity$Diet <- as.factor(euk.diversity$Diet)
+euk.diversity.i <- euk.diversity[which(euk.diversity$Species == "imitator"), ]
+euk.diversity.v <- euk.diversity[which(euk.diversity$Species == "variabilis"), ]
+
+euk.richness.lm.i <- lm(richness ~ Diet, data = euk.diversity.i)
+euk.richness.lm.i
+summary(euk.richness.lm.i)
+
+euk.shannon.lm.i <- lm(shannon ~ Diet, data = euk.diversity.i)
+euk.shannon.lm.i
+summary(euk.shannon.lm.i)
+
+euk.euk.even.lm.i <- lm(euk.even ~ Diet, data = euk.diversity.i)
+euk.euk.even.lm.i
+summary(euk.euk.even.lm.i)
+
+euk.richness.lm.v <- lm(richness ~ Diet, data = euk.diversity.v)
+euk.richness.lm.v
+summary(euk.richness.lm.v)
+
+euk.shannon.lm.v <- lm(shannon ~ Diet, data = euk.diversity.v)
+euk.shannon.lm.v
+summary(euk.shannon.lm.v)
+
+euk.euk.even.lm.v <- lm(euk.even ~ Diet, data = euk.diversity.v)
+euk.euk.even.lm.v
+summary(euk.euk.even.lm.v)
 
 spp.labs <- c("Ranitomeya imitator", "Ranitomeya variabilis") #for facet labels
 names(spp.labs) <- c("imitator", "variabilis")
@@ -686,7 +718,7 @@ ggsave("../figures/18Srichness.pdf", plot=last_plot(), device=NULL, path=NULL, s
 ggsave("../figures/18Srichness.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 
 
-# Graphing Richness
+# Graphing Evenness
 p <- ggplot(euk.diversity, aes(x=Diet, y=euk.even, color=as.factor(Diet), 
                                shape=as.factor(Diet)))+ geom_boxplot() +
   geom_point(aes(color=factor(Diet)), size=2, position = position_jitterdodge()) +       
@@ -713,15 +745,46 @@ p1 + theme_bw() +
 ggsave("../figures/18Sevenness.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 ggsave("../figures/18Sevenness.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 
-
+# Graphing Shannon
+p <- ggplot(euk.diversity, aes(x=Diet, y=shannon, color=as.factor(Diet), 
+                               shape=as.factor(Diet)))+ geom_boxplot() +
+  geom_point(aes(color=factor(Diet)), size=2, position = position_jitterdodge()) +       
+  scale_shape_manual(name = "Diet",
+                     labels = c("detritus fed","egg fed"),
+                     values = c(19, 17)) +
+  scale_colour_manual(name = "Diet", 
+                      labels = c("detritus fed","egg fed"), 
+                      values = c("darkgreen","darkorange")) +  
+  stat_summary(fun.data=mean_cl_boot,size=0.75) 
+p1=p+facet_wrap(~Species)+facet_grid(. ~ Species,labeller = labeller(Species=spp.labs))
+p1 + theme_bw() + 
+    theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.line 
+          =element_line(colour = "black")) + 
+    theme(axis.title=element_text(vjust=1,size=14,face="bold"),
+          axis.text=element_text(size=14), axis.text.x = element_text(vjust=0.65, hjust=0.5, 
+          size=14), panel.border = element_rect(colour = "black",size=1)) + 
+    theme(axis.ticks.length=unit(0.3,"cm")) + labs(x = "Diet", y = "18S Shannon Diversity Index (H')") + 
+    theme(strip.text.x = element_text(size=14, face="italic"), strip.text.y =   
+          element_text(size=14, face="bold"), strip.background = element_rect(colour="black",
+          fill="white", size=1)) +
+          scale_x_discrete(breaks=c("detritus", "egg fed"), labels=c("detritus fed", "egg fed"))
+  
+ggsave("../figures/18Sshannon.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
+ggsave("../figures/18Sshannon.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 ```
-
 # Community Split by Species
-```{r}
+```{r MicroEuk - Ordinations, echo=TRUE}
 #Ranitomeya variabilis
 row.names(euk.dataREL) == row.names(euk.design.final)
+
+# PERMANOVA
 euk.dataREL.v <- euk.dataREL[which(euk.design.final$Species == "variabilis"), ]
+euk.design.final.v <- euk.design.final[which(euk.design.final$Species == "variabilis"), ]
 dataREL.dist <- vegdist(euk.dataREL.v, method="bray")
+
+adonis.euk = adonis2(euk.dataREL.v~euk.design.final.v$Diet,
+                     method = "bray", perm=1000)
+adonis.euk
 
 pcoa <- cmdscale(dataREL.dist, k=3, eig=TRUE, add=FALSE)
   # Classical (Metric) Multidimensional Scaling; returns PCoA coordinates
@@ -731,8 +794,8 @@ explainvar1b <- round(pcoa$eig[1] / sum(pcoa$eig), 3) * 100
 explainvar2b <- round(pcoa$eig[2] / sum(pcoa$eig), 3) * 100
 sum.eigb <- sum(explainvar1b, explainvar2b)
 
-explainvar1b #33.8
-explainvar2b #18.S
+explainvar1b #33.9
+explainvar2b #18.4
 
 new.data <- euk.design.final[which(rownames(euk.design.final) %in% rownames(pcoa$points)), ]
 pcoa.groups <- paste(new.data$Diet, new.data$Species, sep = "_")
@@ -770,8 +833,8 @@ plot1a +
           axis.text.x = element_text(size=14), 
           panel.border = element_rect(colour = "black", size=1.25)) + 
   theme(axis.ticks.length=unit(0.3,"cm")) + 
-  xlab("PCoA 1 (33.8%)") + ylab("PCoA 2 (18.3%)") +
-  ggtitle(label="Ranitomeya variabilis 16S rRNA Community Composition") + 
+  xlab("PCoA 1 (33.9%)") + ylab("PCoA 2 (18.4%)") +
+  ggtitle(label="Ranitomeya variabilis 18S rRNA Community Composition") + 
   theme(plot.title = element_text(color="black", size=14, face="bold.italic"))
 ggsave("../figures/18SOrdination_variabilis_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 ggsave("../figures/18SOrdination_variabilis_diet.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
@@ -780,7 +843,12 @@ ggsave("../figures/18SOrdination_variabilis_diet.png", plot=last_plot(), device=
 #Ranitomeya imitator
 row.names(euk.dataREL) == row.names(euk.design.final)
 euk.dataREL.i <- euk.dataREL[which(euk.design.final$Species == "imitator"), ]
+euk.design.final.i <- euk.design.final[which(euk.design.final$Species == "imitator"), ]
 dataREL.dist <- vegdist(euk.dataREL.i, method="bray")
+
+adonis.euk.i = adonis2(euk.dataREL.i~euk.design.final.i$Diet,
+                     method = "bray", perm=1000)
+adonis.euk.i
 
 pcoa <- cmdscale(dataREL.dist, k=3, eig=TRUE, add=FALSE)
   # Classical (Metric) Multidimensional Scaling; returns PCoA coordinates
@@ -790,8 +858,8 @@ explainvar1b <- round(pcoa$eig[1] / sum(pcoa$eig), 3) * 100
 explainvar2b <- round(pcoa$eig[2] / sum(pcoa$eig), 3) * 100
 sum.eigb <- sum(explainvar1b, explainvar2b)
 
-explainvar1b #34.3
-explainvar2b #26.0
+explainvar1b #34.4
+explainvar2b #26.1
 
 new.data <- euk.design.final[which(rownames(euk.design.final) %in% rownames(pcoa$points)), ]
 pcoa.groups <- paste(new.data$Diet, new.data$Species, sep = "_")
@@ -829,8 +897,8 @@ plot1a +
           axis.text.x = element_text(size=14), 
           panel.border = element_rect(colour = "black", size=1.25)) + 
   theme(axis.ticks.length=unit(0.3,"cm")) + 
-  xlab("PCoA 1 (34.3%)") + ylab("PCoA 2 (26.0%)") +
-  ggtitle(label="Ranitomeya imitator 16S rRNA Community Composition") + 
+  xlab("PCoA 1 (34.4%)") + ylab("PCoA 2 (26.1%)") +
+  ggtitle(label="Ranitomeya imitator 18S rRNA Community Composition") + 
   theme(plot.title = element_text(color="black", size=14, face="bold.italic"))
 ggsave("../figures/18SOrdination_imitator_diet.pdf", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
 ggsave("../figures/18SOrdination_imitator_diet.png", plot=last_plot(), device=NULL, path=NULL, scale=1, width=7, height=5, dpi=300, limitsize=TRUE)
@@ -839,11 +907,6 @@ ggsave("../figures/18SOrdination_imitator_diet.png", plot=last_plot(), device=NU
 
 # MicroEuk community composition analysis - Species x Diet
 ```{r Ordination (PCoA) - Euks, eval=FALSE, include=FALSE}
-# PERMANOVA
-adonis.euk = adonis2(euk.otu~euk.design.final$Diet*euk.design.final$Species,
-                     method = "bray", perm=1000)
-adonis.euk
-
 # Principal Coordinates Analysis
 euk.dataREL.dist <- vegdist(euk.dataREL, method="bray")
 
@@ -914,7 +977,7 @@ ggsave("../figures/18Sordination_allspp_diet.pdf", plot=last_plot(), device=NULL
 
 
 # Otu3587 Abundance
-```{r}
+```{r eval=FALSE, include=FALSE}
 OTU3587 <- euk.otu[ , which(colnames(euk.otu) == "Otu3587")]
 
 ```
