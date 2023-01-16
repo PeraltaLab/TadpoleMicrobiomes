@@ -21,7 +21,7 @@ Weinfurther, K.D., Stuckert, A.M.M., Muscarella, M.E., Peralta, A.L., Summers, K
 
 * **data:** Files associated with amplicon data sets. 
 
-* **figures:** Figures (of GHG, soil, microbes-16S rRNA amplicon, microbes-shotgun metagenomes) generated according to R script located in R Markdown file.
+* **figures:** Figures (of microbes-16S and 18S rRNA amplicons) generated according to R script located in R Markdown file.
 
 * **mothur:** Files containing script for bioinformatic analysis of 16S rRNA and 18S rRNA gene sequences (Illumina MiSeq platform) using mothur pipeline.
 
