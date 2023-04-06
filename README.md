@@ -3,7 +3,7 @@
 This repository contains open-source code, data, & text files.
 
 Raw amplicon sequence files can be found at NCBI SRA [BioProject ID PRJNA855478](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA855478).
-Raw transcriptome sequence files can be found at NCBI SRA [BioProject ID PRJNA854962](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA854962).
+Raw transcriptome sequence files can be found at NCBI SRA [BioProject ID PRJNA854962](https://www.ncbi.nlm.nih.gov/bioproject/PRJNA854962). Assembled transcriptomes can be found on [Zenodo](https://doi.org/10.5281/zenodo.7806471).
 
 ## Manuscript submitted
 Weinfurther, K.D., Stuckert, A.M.M., Muscarella, M.E., Peralta, A.L., Summers, K. Evidence for a Parabasalian Gut Symbiote in Egg-Feeding Poison Frog Tadpoles in Peru
