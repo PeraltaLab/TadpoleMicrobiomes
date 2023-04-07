@@ -1,0 +1,15 @@
+library(data.table)
+library(dplyr)
+# First, import annotation documents
+annos <- fread("annotation_documents/Ranitomeya_annotate2swissprot_tophit.tsv", header = FALSE)
+genes <- fread("annotation_documents/uniprot-reviewed_yes.tab", header = TRUE)
+
+# rename columns from annos file
+annos <- annos[,c(1,3)]
+colnames(annos) <- c("transcript", "Entry")
+
+# join
+tx2annos <- dplyr::left_join(annos, genes, by = "Entry")
+
+#subset out only tx and gene name columns
+tx2gene <- tx2annos[,c(1,6)]
