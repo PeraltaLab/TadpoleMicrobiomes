@@ -1,0 +1,7 @@
+#### Transcriptome annotation
+diamond makedb -in allpep.fa -d allpep.dmnd
+
+diamond blastx -d /home/summerslab/peptidedb/allpep.dmnd -q Rimivartrans.ORP.fasta -o tad_annotation.txt --threads 16
+
+# sort by top hits
+sort tad_annotation.txt -k 1,1 -k11,11g | sort -u -k 1,1 --merge > tad_annotation_tophit.txt

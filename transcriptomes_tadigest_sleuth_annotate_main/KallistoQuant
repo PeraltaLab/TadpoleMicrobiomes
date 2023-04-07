@@ -1,0 +1,6 @@
+#script to setup a kallisto index (currently in kayla2.0) and psuedo-quantify reads (for Rvar tadgut reads in this script)
+kallisto index -i Rvartrans.idx /home/summerslab/kayla2.0/variabilis/assemblies/var_sub.ORP.fasta
+#below is an example of the quantification for one sample - this can be done in with a loop (see Adam Stucker's code for psuedo-quantification 
+#in Tadpole_Diet (https://github.com/AdamStuckert/Tadpole_diet/blob/master/Quantification_and_annotation.sh)
+kallisto quant -i Rvartrans.idx -o KW_Rv_nf_4_o -t 8  -b 100 imitator/reads/vareads/KW_Rv_nf_4_1.fq.gz imitator/reads/vareads/KW_Rv_nf_4_2.fq.gz
+#once reads are psuedo-quantified, they can be used for DE analyses with Sleuth

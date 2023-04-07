@@ -1,0 +1,48 @@
+#Previous annotation script
+
+# Import Xenopus information, select only peptides and gene columns, rename them
+x2g <- fread("annotatedocs/xenpep2gene.tsv", header = FALSE)
+x2g <- x2g[,-1]
+colnames(x2g) <- c("peptide_id", "gene_name")
+
+# Import Nanorana information, select only peptides and gene columns, rename them
+n2g <- fread("annotatedocs/nan2gene.tsv", header = FALSE)
+colnames(n2g) <- c("peptide_id", "gene_name")
+
+# Import Uniref information, select only peptides and gene columns, rename them
+u2g <- fread("annotatedocs/uniprot.tab", header = TRUE)
+u2g <- u2g[,c(1,5)]
+u2g$peptide_id <- ""
+u2g$peptide_id <- paste("UniRef90_", u2g$Entry)
+u2g <- u2g[,c(3,2)]
+colnames(u2g) <- c("peptide_id", "gene_name")
+
+# merge all three of those into one dataframe
+a2g <- rbind(x2g, n2g)
+
+
+# Annotation results from the full annotation database annotation
+#ann <- read.table("annotatedocs/subimiallpep_tophit.txt", header = FALSE, fill = TRUE)
+#colnames(ann)[c(1:12)] <- c("transcript_id", "peptide_id", "percentage_id_matches",
+"alignment_length", "number_mismatches", "number_gap_openings",
+"query_start", "query_end", "alignment_start", "alignment_end",
+"expected_value", "bitscore")
+#ann <- ann[,c(1:2,11)]
+
+#ann <- dplyr::left_join(ann, a2g, by = "peptide_id")
+#colnames(ann) <- c("target_id", "full_peptide_id", "full_evalue", "full_gene_name")
+
+# Annotation results from the Xenopus only database annotation
+xen <- read.table("annotatedocs/tad_annotation_tophit.txt", header = FALSE, fill = TRUE)
+colnames(xen)[c(1:12)] <- c("transcript_id", "peptide_id", "percentage_id_matches",
+                            "alignment_length", "number_mismatches", "number_gap_openings",
+                            "query_start", "query_end", "alignment_start", "alignment_end",
+                            "expected_value", "bitscore")
+
+xen <- xen[,c(1:2,11)]
+
+# Merge the two different annotations
+xen <- dplyr::left_join(xen, a2g, by = "peptide_id")
+colnames(xen) <- c("target_id", "xen_peptide_id", "xen_evalue", "xen_gene_name")
+
+#anno <- dplyr::left_join(ann, xen, by = "target_id")
